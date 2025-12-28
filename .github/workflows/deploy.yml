@@ -20,9 +20,13 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
+      - name: Remove old site folder (if any)
+        run: |
+          aws s3 rm s3://${{ secrets.S3_BUCKET_NAME }}/site --recursive || echo "No site folder found"
+
       - name: Sync website files to S3 root
         run: |
-          aws s3 sync . s3://${{ secrets.S3_BUCKET_NAME }} \
+          aws s3 sync ./ s3://${{ secrets.S3_BUCKET_NAME }}/ \
             --delete \
             --exclude ".git/*" \
             --exclude ".github/*" \
